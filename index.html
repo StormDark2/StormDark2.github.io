@@ -42,11 +42,8 @@
     <input type="number" id="valor2"><br>
 
     <button onclick="generarEntrada()">Generar Entrada</button>
-
     <button onclick="limpiarCampos()">Limpiar Campos</button>
-
     <button onclick="copiarTexto()">Copiar al Portapapeles</button>
-
 
     <p>Resultado:</p>
     <pre id="resultado"></pre>
@@ -73,7 +70,7 @@
                     valor2 += 4800;
                 }
             } else {
-              valor2 = 0;
+                valor2 = 0;
             }
 
             const v1 = (valor1 * 100).toLocaleString('es-CL', { useGrouping: true }).replace(/,/g, '.');
@@ -108,47 +105,40 @@ Tipo de locomoción 2: ${tipoLocomocion2}`;
             textoAdicional += `
 Valor 1: ${valor1}km x 100: $${v1}`;
 
-if (valor2Checkbox) {
+            if (valor2Checkbox) {
                 textoAdicional += `
 Valor 2: $${v2} (${tipoLocomocion2})`;
             }
 
             textoAdicional += `
-
 Subtotal: $${s}`;
 
             document.getElementById("resultado").textContent = textoAdicional;
         }
 
-function limpiarCampos() {
-    document.getElementById("numeroAtencion").value = "";
-    document.getElementById("direccionOrigen").value = "";
-    document.getElementById("casaOrigen").checked = false;
-    document.getElementById("direccionAtencion").value = "";
-    document.getElementById("casaAtencion").checked = false;
-    document.getElementById("valor1").value = "";
-    document.getElementById("valor2Checkbox").checked = false;
-    document.getElementById("valor2Combobox").value = "Peaje Interurbano";
-    document.getElementById("valor2").value = "";
+        function limpiarCampos() {
+            document.getElementById("numeroAtencion").value = "";
+            document.getElementById("direccionOrigen").value = "";
+            document.getElementById("casaOrigen").checked = false;
+            document.getElementById("direccionAtencion").value = "";
+            document.getElementById("casaAtencion").checked = false;
+            document.getElementById("valor1").value = "";
+            document.getElementById("valor2Checkbox").checked = false;
+            document.getElementById("valor2Combobox").value = "Peaje Interurbano";
+            document.getElementById("valor2").value = "";
+            document.getElementById("resultado").textContent = "";
+        }
 
-    // Limpia el resultado anterior
-    document.getElementById("resultado").textContent = "";
-}
-
-function copiarTexto() {
-    const texto = document.getElementById("resultado").textContent;
-
-    // Crea un elemento de texto temporal
-    const elementoTemporal = document.createElement("textarea");
-    elementoTemporal.value = texto;
-
-    // Añade el elemento temporal al DOM
-    document.body.appendChild(elementoTemporal);
-
-    // Selecciona el texto dentro del elemento
-    elementoTemporal.select();
-    elementoTemporal.setSelectionRange(0, 99999); // Para navegadores móviles
-    
+        function copiarTexto() {
+            const texto = document.getElementById("resultado").textContent;
+            const elementoTemporal = document.createElement("textarea");
+            elementoTemporal.value = texto;
+            document.body.appendChild(elementoTemporal);
+            elementoTemporal.select();
+            document.execCommand("copy");
+            document.body.removeChild(elementoTemporal);
+            alert("Texto copiado al portapapeles");
+        }
     </script>
 </body>
 </html>
