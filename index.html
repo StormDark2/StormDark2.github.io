@@ -42,6 +42,8 @@
     <input type="number" id="valor2"><br>
 
     <button onclick="generarEntrada()">Generar Entrada</button>
+    <button onclick="siguienteViaje()">Siguiente Viaje</button>
+    <button onclick="siguienteDia()">Siguiente día</button>
     <button onclick="limpiarCampos()">Limpiar Campos</button>
     <button onclick="copiarTexto()">Copiar al Portapapeles</button>
 
@@ -57,17 +59,17 @@
             if (valor2Checkbox) {
                 const valor2Combobox = document.getElementById("valor2Combobox").value;
                 if (valor2Combobox === "Peaje Interurbano") {
-                    valor2 = 800;
+                    valor2 = 900;
                 } else if (valor2Combobox === "Colacion") {
                     valor2 = 4000;
                 } else if (valor2Combobox === "Peaje Interurbano + Estacionamiento") {
-                    valor2 += 800;
+                    valor2 += 900;
                 } else if (valor2Combobox === "Peaje Interurbano + Colacion") {
-                    valor2 = 4800;
+                    valor2 = 4900;
                 } else if (valor2Combobox === "Estacionamiento + Colacion") {
                     valor2 += 4000;
                 } else if (valor2Combobox === "Peaje Interurbano + Estacionamiento + Colacion") {
-                    valor2 += 4800;
+                    valor2 += 4900;
                 }
             } else {
                 valor2 = 0;
@@ -138,6 +140,38 @@ Subtotal: $${s}`;
             document.execCommand("copy");
             document.body.removeChild(elementoTemporal);
         }
+
+        function siguienteViaje() {
+            // Guardamos el valor actual de la dirección de atención
+            let direccionOrigen = document.getElementById("direccionOrigen").value;
+            let direccionAtencion = document.getElementById("direccionAtencion").value;
+            // Intercambiamos
+            document.getElementById("direccionOrigen").value = direccionAtencion;
+            document.getElementById("direccionAtencion").value = "";
+            // Limpiamos el resto de campos como en limpiarCampos()
+            document.getElementById("numeroAtencion").value = "";
+            document.getElementById("casaOrigen").checked = false;
+            document.getElementById("casaAtencion").checked = false;
+            document.getElementById("valor1").value = "";
+            document.getElementById("valor2Checkbox").checked = false;
+            document.getElementById("valor2Combobox").value = "Peaje Interurbano";
+            document.getElementById("valor2").value = "";
+            document.getElementById("resultado").textContent = "";
+        }
+
+        function siguienteDia() {
+            // Limpiar todos los campos como en limpiarCampos
+            document.getElementById("numeroAtencion").value = "";
+            document.getElementById("direccionOrigen").value = "";
+            document.getElementById("casaOrigen").checked = true; // Mantener marcado
+            document.getElementById("direccionAtencion").value = "";
+            document.getElementById("casaAtencion").checked = false;
+            document.getElementById("valor1").value = "";
+            document.getElementById("valor2Checkbox").checked = false;
+            document.getElementById("valor2Combobox").value = "Peaje Interurbano";
+            document.getElementById("valor2").value = "";
+            document.getElementById("resultado").textContent = "";
+}
     </script>
 </body>
 </html>
