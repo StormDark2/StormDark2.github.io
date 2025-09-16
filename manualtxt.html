@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulario de Atenciones</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    label {
+      display: block;
+      margin-top: 8px;
+    }
+    input, select, button {
+      margin-top: 4px;
+    }
+    #resultado {
+      white-space: pre-line;
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-top: 15px;
+      background: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+  <h2>Formulario de Atenciones</h2>
+
+  <label>Número de Atención:
+    <input type="text" id="numeroAtencion">
+  </label>
+
+  <label>Dirección de Origen:
+    <input type="text" id="direccionOrigen">
+    <input type="checkbox" id="casaOrigen"> Casa Origen
+  </label>
+
+  <label>Dirección de Atención:
+    <input type="text" id="direccionAtencion">
+    <input type="checkbox" id="casaAtencion"> Casa Atención
+  </label>
+
+  <label>Valor 1 (km):
+    <input type="number" id="valor1">
+  </label>
+
+  <label>
+    <input type="checkbox" id="valor2Checkbox"> Agregar valor 2
+  </label>
+  <label>Tipo de valor 2:
+    <select id="valor2Combobox">
+      <option>Peaje Interurbano</option>
+      <option>Estacionamiento</option>
+      <option>Colacion</option>
+      <option>Peaje Interurbano + Estacionamiento</option>
+      <option>Peaje Interurbano + Colacion</option>
+      <option>Estacionamiento + Colacion</option>
+      <option>Peaje Interurbano + Estacionamiento + Colacion</option>
+    </select>
+  </label>
+  <label>Valor 2 (si aplica):
+    <input type="number" id="valor2">
+  </label>
+
+  <br><br>
+  <button onclick="generarEntrada()">Generar Entrada</button>
+  <button onclick="limpiarCampos()">Limpiar</button>
+  <button onclick="siguienteViaje()">Siguiente viaje</button>
+  <button onclick="siguienteDia()">Siguiente día</button>
+  <button onclick="copiarTexto()">Copiar texto</button>
+
+  <h3>Resultado:</h3>
+  <div id="resultado"></div>
+
+  <script>
+    function limpiarFormulario(opciones = {}) {
+      document.getElementById("numeroAtencion").value = "";
+      document.getElementById("direccionOrigen").value = opciones.direccionOrigen || "";
+      document.getElementById("casaOrigen").checked = !!opciones.casaOrigen;
+      document.getElementById("direccionAtencion").value = opciones.direccionAtencion || "";
+      document.getElementById("casaAtencion").checked = !!opciones.casaAtencion;
+      document.getElementById("valor1").value = "";
+      document.getElementById("valor2Checkbox").checked = false;
+      document.getElementById("valor2Combobox").value = "Peaje Interurbano";
+      document.getElementById("valor2").value = "";
+      document.getElementById("resultado").textContent = "";
+    }
+
+    function limpiarCampos() {
+      limpiarFormulario();
+    }
+
+    function siguienteViaje() {
+      const atencion = document.getElementById("direccionAtencion").value;
+      limpiarFormulario({ direccionOrigen: atencion });
+    }
+
+    function siguienteDia() {
+      limpiarFormulario({ casaOrigen: true });
+    }
+
+    function generarEntrada() {
+      const valor1 = parseFloat(document.getElementById("valor1").value) || 0;
+      const valor2Checkbox = document.getElementById("valor2Checkbox").checked;
+      const valor2Input = parseFloat(document.getElementById("valor2").value) || 0;
+      let valor2 = 0;
+
+      if (valor2Checkbox) {
+        const opcion = document.getElementById("valor2Combobox").value;
+        switch (opcion) {
+          case "Peaje Interurbano":
+            valor2 = 900;
+            break;
+          case "Estacionamiento":
+            valor2 = valor2Input;
+            break;
+          case "Colacion":
+            valor2 = 4000;
+            break;
+          case "Peaje Interurbano + Estacionamiento":
+            valor2 = 900 + valor2Input;
+            break;
+          case "Peaje Interurbano + Colacion":
+            valor2 = 900 + 4000;
+            break;
+          case "Estacionamiento + Colacion":
+            valor2 = valor2Input + 4000;
+            break;
+          case "Peaje Interurbano + Estacionamiento + Colacion":
+            valor2 = 900 + valor2Input + 4000;
+            break;
+          default:
+            valor2 = valor2Input;
+        }
+      }
+
+      const v1Number = Math.round(valor1 * 100);
+      const subtotalNumber = v1Number + Math.round(valor2);
+
+      const formatoCLP = n => n.toLocaleString('es-CL', { maximumFractionDigits: 0 });
+
+      const v1 = formatoCLP(v1Number);
+      const v2 = formatoCLP(valor2);
+      const s  = formatoCLP(subtotalNumber);
+
+      const esCasaOrigen = document.getElementById("casaOrigen").checked;
+      const esCasaAtencion = document.getElementById("casaAtencion").checked;
+      const numeroAtencion = document.getElementById("numeroAtencion").value;
+      let direccionOrigen = document.getElementById("direccionOrigen").value;
+      let direccionAtencion = document.getElementById("direccionAtencion").value;
+      const tipoLocomocion2 = valor2Checkbox ? document.getElementById("valor2Combobox").value : "No seleccionado";
+
+      if (esCasaOrigen) direccionOrigen = "Obispo Rafael Lira Infante 0556, Graneros";
+      if (esCasaAtencion) direccionAtencion = "Obispo Rafael Lira Infante 0556, Graneros";
+
+      let textoAdicional = `
+Número de atención: TS0${numeroAtencion}
+Dirección de Origen: ${direccionOrigen}
+Dirección de Atención: ${direccionAtencion}
+Tipo de locomoción 1: Vehículo`;
+
+      if (valor2Checkbox) {
+        textoAdicional += `
+Tipo de locomoción 2: ${tipoLocomocion2}`;
+      }
+
+      textoAdicional += `
+Valor 1: ${valor1}km x 100: $${v1}`;
+
+      if (valor2Checkbox) {
+        textoAdicional += `
+Valor 2: $${v2} (${tipoLocomocion2})`;
+      }
+
+      textoAdicional += `
+Subtotal: $${s}`;
+
+      document.getElementById("resultado").textContent = textoAdicional;
+    }
+
+    function copiarTexto() {
+      const texto = document.getElementById("resultado").textContent || "";
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(texto).catch(() => {
+          const ta = document.createElement('textarea');
+          ta.value = texto;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+        });
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = texto;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+    }
+  </script>
+</body>
+</html>
