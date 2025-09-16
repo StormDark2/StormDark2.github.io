@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Procesar Excel a TXT</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+  <h1>Procesador de Excel a TXT</h1>
+
+  <input type="file" id="inputExcel" accept=".xlsx, .xls">
+  <br><br>
+  <button onclick="procesarExcel()">Procesar Excel y Descargar TXT</button>
+
+  <script>
+    // Función para convertir fecha serial de Excel a dd/mm/yyyy
+    function excelDateToJSDate(serial) {
+      if (!serial || isNaN(serial)) return "";
+      const utc_days = Math.floor(serial - 25569);
+      const utc_value = utc_days * 86400; 
+      const date_info = new Date(utc_value * 1000);
+      const day = String(date_info.getUTCDate()).padStart(2, '0');
+      const month = String(date_info.getUTCMonth() + 1).padStart(2, '0');
+      const year = date_info.getUTCFullYear();
+      return `${day}/${month}/${year}`;
+    }
+
+    function procesarExcel() {
+      const fileInput = document.getElementById('inputExcel');
+
+      if (!fileInput.files.length) {
+        alert("Por favor, selecciona un archivo Excel.");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        const filas = XLSX.utils.sheet_to_json(sheet, { defval: "" });
+
+        let txtFinal = "";
+        let fechaActual = "";
+
+        filas.forEach(fila => {
+          let fecha = fila["Fecha"];
+          if (fecha && !isNaN(fecha)) {
+            fecha = excelDateToJSDate(Number(fecha)); // convertir fecha serial
+          } else if (fecha) {
+            fecha = fecha.toString().trim(); // si ya viene como texto
+          } else {
+            fecha = "";
+          }
+
+          const numero = fila["Numero"] || "";
+          const origen = fila["Origen"] || "";
+          const atencion = fila["Atencion"] || "";
+          const km = Number(fila["KM"]) || 0;
+
+          // Insertar separador si cambia la fecha
+          if (fecha && fecha !== fechaActual) {
+            txtFinal += `\n\n${fecha}\n\n`;
+            fechaActual = fecha;
+          }
+
+          const valor1 = km * 100;
+
+          let valor2 = 0;
+          let locomocionExtras = [];
+
+          // Peaje → suma fija 900 si está informado
+          if (fila["Peaje"] && String(fila["Peaje"]).trim() !== "") {
+            valor2 += 900;
+            locomocionExtras.push("Peaje Interurbano");
+          }
+
+          // Estacionamiento → suma lo que traiga la celda
+          if (fila["Estacionamiento"] && Number(fila["Estacionamiento"]) > 0) {
+            valor2 += Number(fila["Estacionamiento"]);
+            locomocionExtras.push("Estacionamiento");
+          }
+
+          // Colación → suma fija 4000 si está informado
+          if (fila["Colacion"] && String(fila["Colacion"]).trim() !== "") {
+            valor2 += 4000;
+            locomocionExtras.push("Colación");
+          }
+
+          const tipoLocomocion2 = locomocionExtras.length > 0 ? locomocionExtras.join(" + ") : "";
+
+          const subtotal = valor1 + valor2;
+
+          const formatoCLP = n => n.toLocaleString('es-CL', { maximumFractionDigits: 0 });
+
+          // Construcción del registro
+          let registro =
+`Número de atención: TS0${numero}
+Dirección de Origen: ${origen}
+Dirección de Atención: ${atencion}
+Tipo de locomoción 1: Vehículo`;
+
+          if (tipoLocomocion2) {
+            registro += `\nTipo de locomoción 2: ${tipoLocomocion2}`;
+          }
+
+          registro += `
+Valor 1: ${km}km x 100: $${formatoCLP(valor1)}`;
+
+          if (valor2 > 0) {
+            registro += `\nValor 2: $${formatoCLP(valor2)} (${tipoLocomocion2})`;
+          }
+
+          registro += `\nSubtotal: $${formatoCLP(subtotal)}\n\n`;
+
+          txtFinal += registro;
+        });
+
+        // Descargar TXT
+        const blob = new Blob([txtFinal], { type: 'text/plain;charset=utf-8' });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "viajes.txt";
+        link.click();
+      };
+
+      reader.readAsArrayBuffer(fileInput.files[0]);
+    }
+  </script>
+</body>
+</html>
