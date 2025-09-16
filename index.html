@@ -1,177 +1,35 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador de Entrada</title>
-    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
-    <script type="text/javascript" src="js/d3.v3.min.js"></script>
-    <script type="text/javascript" src="js/utilities.js"></script>
+  <meta charset="UTF-8">
+  <title>Menú Principal</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 100px;
+    }
+    h1 {
+      margin-bottom: 40px;
+    }
+    button {
+      font-size: 18px;
+      padding: 15px 30px;
+      margin: 15px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
 </head>
 <body>
-    <h1>Generador de Entrada</h1>
-    <label for="numeroAtencion">Número de Atención:</label>
-    <input type="number" id="numeroAtencion"><br>
-
-    <label for="direccionOrigen">Dirección de Origen:</label>
-    <input type="text" id="direccionOrigen">
-    <input type="checkbox" id="casaOrigen">
-    <label for="casaOrigen">Casa</label><br>
-
-    <label for="direccionAtencion">Dirección de Atención:</label>
-    <input type="text" id="direccionAtencion">
-    <input type="checkbox" id="casaAtencion">
-    <label for="casaAtencion">Casa</label><br>
-
-    <label for="valor1">Valor 1:</label>
-    <input type="number" id="valor1"><br>
-
-    <input type="checkbox" id="valor2Checkbox">
-    <label for="valor2Checkbox">Valor 2</label>
-    <select id="valor2Combobox">
-        <option value="Peaje Interurbano">Peaje</option>
-        <option value="Estacionamiento">Estacionamiento</option>
-        <option value="Colacion">Colación</option>
-        <option value="Peaje Interurbano + Estacionamiento">Peaje + Estacionamiento</option>
-        <option value="Peaje Interurbano + Colacion">Peaje + Colación</option>
-        <option value="Estacionamiento + Colacion">Estacionamiento + Colación</option>
-        <option value="Peaje Interurbano + Estacionamiento + Colacion">Peaje + Estacionamiento + Colación</option>
-    </select><br>
-
-    <label for="valor2">Valor 2:</label>
-    <input type="number" id="valor2"><br>
-
-    <button onclick="generarEntrada()">Generar Entrada</button>
-    <button onclick="siguienteViaje()">Siguiente Viaje</button>
-    <button onclick="siguienteDia()">Siguiente día</button>
-    <button onclick="limpiarCampos()">Limpiar Campos</button>
-    <button onclick="copiarTexto()">Copiar al Portapapeles</button>
-
-    <p>Resultado:</p>
-    <pre id="resultado"></pre>
-
-    <script>
-        function generarEntrada() {
-            const valor1 = parseFloat(document.getElementById("valor1").value);
-            const valor2Checkbox = document.getElementById("valor2Checkbox").checked;
-            let valor2 = parseFloat(document.getElementById("valor2").value);
-
-            if (valor2Checkbox) {
-                const valor2Combobox = document.getElementById("valor2Combobox").value;
-                if (valor2Combobox === "Peaje Interurbano") {
-                    valor2 = 900;
-                } else if (valor2Combobox === "Colacion") {
-                    valor2 = 4000;
-                } else if (valor2Combobox === "Peaje Interurbano + Estacionamiento") {
-                    valor2 += 900;
-                } else if (valor2Combobox === "Peaje Interurbano + Colacion") {
-                    valor2 = 4900;
-                } else if (valor2Combobox === "Estacionamiento + Colacion") {
-                    valor2 += 4000;
-                } else if (valor2Combobox === "Peaje Interurbano + Estacionamiento + Colacion") {
-                    valor2 += 4900;
-                }
-            } else {
-                valor2 = 0;
-            }
-
-            const v1 = (valor1 * 100).toLocaleString('es-CL', { useGrouping: true }).replace(/,/g, '.');
-            const v2 = isNaN(valor2) ? 0 : valor2.toLocaleString('es-CL', { useGrouping: true }).replace(/,/g, '.');
-            const s = (parseFloat(v1.replace(/\./g, '')) + parseFloat(v2.replace(/\./g, ''))).toLocaleString('es-CL', { useGrouping: true }).replace(/,/g, '.');
-
-            // Generar el texto adicional
-            const esCasaOrigen = document.getElementById("casaOrigen").checked;
-            const esCasaAtencion = document.getElementById("casaAtencion").checked;
-            const numeroAtencion = document.getElementById("numeroAtencion").value;
-            let direccionOrigen = document.getElementById("direccionOrigen").value;
-            let direccionAtencion = document.getElementById("direccionAtencion").value;
-            const tipoLocomocion2 = valor2Checkbox ? document.getElementById("valor2Combobox").value : "No seleccionado";
-            if (esCasaOrigen) {
-                direccionOrigen = "Obispo Rafael Lira Infante 0556, Graneros";
-            }
-            if (esCasaAtencion) {
-                direccionAtencion = "Obispo Rafael Lira Infante 0556, Graneros";
-            }
-
-            let textoAdicional = `
-Número de atención: TS0${numeroAtencion}
-Dirección de Origen: ${direccionOrigen}
-Dirección de Atención: ${direccionAtencion}
-Tipo de locomoción 1: Vehículo`;
-
-            if (valor2Checkbox) {
-                textoAdicional += `
-Tipo de locomoción 2: ${tipoLocomocion2}`;
-            }
-
-            textoAdicional += `
-Valor 1: ${valor1}km x 100: $${v1}`;
-
-            if (valor2Checkbox) {
-                textoAdicional += `
-Valor 2: $${v2} (${tipoLocomocion2})`;
-            }
-
-            textoAdicional += `
-Subtotal: $${s}`;
-
-            document.getElementById("resultado").textContent = textoAdicional;
-        }
-
-        function limpiarCampos() {
-            document.getElementById("numeroAtencion").value = "";
-            document.getElementById("direccionOrigen").value = "";
-            document.getElementById("casaOrigen").checked = false;
-            document.getElementById("direccionAtencion").value = "";
-            document.getElementById("casaAtencion").checked = false;
-            document.getElementById("valor1").value = "";
-            document.getElementById("valor2Checkbox").checked = false;
-            document.getElementById("valor2Combobox").value = "Peaje Interurbano";
-            document.getElementById("valor2").value = "";
-            document.getElementById("resultado").textContent = "";
-        }
-
-        function copiarTexto() {
-            const texto = document.getElementById("resultado").textContent;
-            const elementoTemporal = document.createElement("textarea");
-            elementoTemporal.value = texto;
-            document.body.appendChild(elementoTemporal);
-            elementoTemporal.select();
-            document.execCommand("copy");
-            document.body.removeChild(elementoTemporal);
-        }
-
-        function siguienteViaje() {
-            // Guardamos el valor actual de la dirección de atención
-            let direccionOrigen = document.getElementById("direccionOrigen").value;
-            let direccionAtencion = document.getElementById("direccionAtencion").value;
-            // Intercambiamos
-            document.getElementById("direccionOrigen").value = direccionAtencion;
-            document.getElementById("direccionAtencion").value = "";
-            // Limpiamos el resto de campos como en limpiarCampos()
-            document.getElementById("numeroAtencion").value = "";
-            document.getElementById("casaOrigen").checked = false;
-            document.getElementById("casaAtencion").checked = false;
-            document.getElementById("valor1").value = "";
-            document.getElementById("valor2Checkbox").checked = false;
-            document.getElementById("valor2Combobox").value = "Peaje Interurbano";
-            document.getElementById("valor2").value = "";
-            document.getElementById("resultado").textContent = "";
-        }
-
-        function siguienteDia() {
-            // Limpiar todos los campos como en limpiarCampos
-            document.getElementById("numeroAtencion").value = "";
-            document.getElementById("direccionOrigen").value = "";
-            document.getElementById("casaOrigen").checked = true; // Mantener marcado
-            document.getElementById("direccionAtencion").value = "";
-            document.getElementById("casaAtencion").checked = false;
-            document.getElementById("valor1").value = "";
-            document.getElementById("valor2Checkbox").checked = false;
-            document.getElementById("valor2Combobox").value = "Peaje Interurbano";
-            document.getElementById("valor2").value = "";
-            document.getElementById("resultado").textContent = "";
-}
-    </script>
-</body>
-</html>
+  <h1>Selecciona una opción</h1>
+  <button onclick="location.href='manualtxt.html'">Carga Individual</button>
+  <button onclick="location.href='exceltotxt.html'">Carga por Excel</button>
+</
