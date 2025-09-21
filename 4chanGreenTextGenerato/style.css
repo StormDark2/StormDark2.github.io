@@ -1,0 +1,115 @@
+:root{--bg:#e9eded}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  margin:16px;
+  background:#f6f6f6;
+  color:#222;
+}
+
+.app {
+  display:flex;
+  gap:18px;
+  align-items:flex-start;
+}
+
+#card {
+  width:980px;
+  background:var(--bg);
+  padding:28px;
+  border-radius:6px;
+  box-shadow:0 6px 18px rgba(0,0,0,.08);
+  overflow:hidden;
+}
+
+.left {
+  float:left;
+  width:280px;
+  margin-right:20px;
+  text-align:center;
+}
+
+.left img {
+  width:280px;
+  height:250px;
+  object-fit:contain;
+  display:block;
+  margin:0 auto;
+  border-radius:4px;
+  background:#e9eded;
+}
+
+.caption {
+  font-size:14px;
+  color:#222;
+  margin-top:6px;
+  text-align:center;
+}
+
+.lines {
+  font-size:36px;
+  line-height:1.2;
+  white-space:pre-wrap;
+  word-break:break-word;
+  text-align:left;
+}
+
+.lineWrapper {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:4px;
+}
+
+.lineWrapper input[type=color] {
+  flex-shrink:0;
+  width:28px;
+  height:28px;
+  padding:0;
+  border:none;
+  cursor:pointer;
+}
+
+.controls {
+  width:360px;
+  background:#fff;
+  padding:16px;
+  border-radius:6px;
+  box-shadow:0 6px 18px rgba(0,0,0,.06);
+}
+
+.controls label {
+  display:block;
+  margin-top:10px;
+  font-size:13px;
+  color:#444;
+}
+
+.controls input[type=text],
+.controls textarea {
+  width:100%;
+  padding:8px;
+  border:1px solid #ddd;
+  border-radius:4px;
+  font-size:14px;
+}
+
+.row {
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+
+button {
+  margin-top:12px;
+  padding:10px 14px;
+  border:0;
+  border-radius:6px;
+  background:#1976d2;
+  color:#fff;
+  cursor:pointer;
+}
+
+small.hint {
+  color:#666;
+}
