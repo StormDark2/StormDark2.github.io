@@ -1,45 +1,58 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Menú Principal</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      background-color: #f5f5f5;
-    }
-    h1 {
-      margin-bottom: 30px;
-    }
-    button {
-      padding: 10px 20px;
-      margin: 10px;
-      font-size: 16px;
-      cursor: pointer;
-      border: none;
-      border-radius: 5px;
-      background-color: #4CAF50;
-      color: white;
-      transition: background-color 0.3s;
-    }
-    button:hover {
-      background-color: #45a049;
-    }
-  </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Generador: tarjeta estilo meme (texto único)</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Menú Principal</h1>
+  <h2>Generador de tarjeta estilo meme — texto único ajustable</h2>
+  <div class="app">
+    <div>
+      <div id="card" class="clearfix">
+        <div class="left">
+          <img id="photo" src="/mnt/data/315d5b4e-30fb-4dd4-a00c-86c66f7bf262.png" alt="foto" crossorigin="anonymous">
+          <div class="caption" id="filesize">895 KB PNG</div>
+        </div>
+        <div class="lines" id="linesPreview"></div>
+      </div>
 
-  <button onclick="location.href='manualtxt.html'">Carga Individual</button>
-  <button onclick="location.href='exceltotxt.html'">Carga por Excel</button>
-  <button onclick="location.href='4chanGreenTextGenerator/index.html'">Editor 4chan</button>
+      <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
+        <button id="exportBtn">Exportar imagen (PNG)</button>
+        <button id="resetBtn" style="background:#4caf50">Restablecer</button>
+      </div>
+    </div>
 
+    <aside class="controls">
+      <label>Subir imagen (arrastra o selecciona)</label>
+      <input type="file" id="imageInput" accept="image/*">
+      <small class="hint">Si no subes imagen, se usa la imagen por defecto incluida.</small>
+
+      <label>Texto (cada línea será precedida por &gt; )</label>
+      <textarea id="linesInput" rows="8">Agregar texto aca</textarea>
+
+      <div class="row">
+        <div style="flex:1">
+          <label>Tamaño base (px)</label>
+          <input type="number" id="fontSize" min="16" max="72" value="36" style="width:100%">
+        </div>
+      </div>
+
+      <label>Color de fondo</label>
+      <input type="color" id="bgColor" value="#e9eded">
+
+      <label>Fuente</label>
+      <select id="fontFamily">
+        <option value="Arial, Helvetica, sans-serif">Arial</option>
+        <option value="'Helvetica Neue', Arial, sans-serif">Helvetica Neue</option>
+        <option value="'Times New Roman', Times, serif">Times</option>
+        <option value="'Courier New', monospace">Courier</option>
+      </select>
+    </aside>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
