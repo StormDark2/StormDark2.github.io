@@ -7,7 +7,6 @@ const bgColor = document.getElementById('bgColor');
 const fontSize = document.getElementById('fontSize');
 const fontFamily = document.getElementById('fontFamily');
 
-// Array para guardar los colores de cada línea
 let lineColors = [];
 
 function formatBytes(bytes){
@@ -24,7 +23,7 @@ imageInput.addEventListener('change', e=>{
     photo.src = ev.target.result;
   };
   reader.readAsDataURL(file);
-  filesize.textContent = formatBytes(file.size) + ' ' + (file.name.split('.').pop()||'') .toUpperCase();
+  filesize.textContent = formatBytes(file.size) + ' ' + (file.name.split('.').pop()||'').toUpperCase();
 });
 
 function applyPreview(){
@@ -70,7 +69,13 @@ document.getElementById('exportBtn').addEventListener('click', ()=>{
   const card = document.getElementById('card');
   const colorInputs = card.querySelectorAll('input[type=color]');
   colorInputs.forEach(inp=>inp.style.display='none');
-  html2canvas(card, {useCORS:true, scale:2}).then(canvas=>{
+
+  html2canvas(card, {
+    useCORS: true,
+    scale: 2,
+    windowWidth: card.scrollWidth,
+    windowHeight: card.scrollHeight
+  }).then(canvas=>{
     colorInputs.forEach(inp=>inp.style.display='');
     const link = document.createElement('a');
     link.download = 'meme-style.png';
