@@ -24,19 +24,20 @@ body {
 
 .left {
   float:left;
-  width:250px;
+  width:280px;
   margin-right:20px;
   text-align:center;
 }
 
 .left img {
-  width:250px;
-  height:280px;
-  object-fit:contain;
-  display:block;
-  margin:0 auto;
-  border-radius:4px;
-  background:#e9eded;
+  width: 100%;        /* ocupar todo el ancho del contenedor */
+  height: auto;       /* mantener proporción */
+  max-height: 400px;  /* límite máximo de altura */
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+  border-radius: 4px;
+  background: #e9eded;
 }
 
 .caption {
@@ -100,14 +101,24 @@ body {
   align-items:center;
 }
 
+.buttonRow {
+  margin-top:10px;
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+
 button {
-  margin-top:12px;
   padding:10px 14px;
   border:0;
   border-radius:6px;
   background:#1976d2;
   color:#fff;
   cursor:pointer;
+}
+
+.resetBtn {
+  background:#4caf50;
 }
 
 small.hint {
