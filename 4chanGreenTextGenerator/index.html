@@ -18,9 +18,9 @@
         <div class="lines" id="linesPreview"></div>
       </div>
 
-      <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
+      <div class="buttonRow">
         <button id="exportBtn">Exportar imagen (PNG)</button>
-        <button id="resetBtn" style="background:#4caf50">Restablecer</button>
+        <button id="resetBtn" class="resetBtn">Restablecer</button>
       </div>
     </div>
 
@@ -28,12 +28,12 @@
       <label>Subir imagen (arrastra o selecciona)</label>
       <input type="file" id="imageInput" accept="image/*">
 
-      <label>Agregar Texto (cada línea será precedida por &gt; )</label>
+      <label>Texto (cada línea será precedida por &gt; )</label>
       <textarea id="linesInput" rows="8">Agregar texto aca</textarea>
 
       <div class="row">
         <div style="flex:1">
-          <label>Tamaño base texto(px)</label>
+          <label>Tamaño base texto (px)</label>
           <input type="number" id="fontSize" min="16" max="72" value="36" style="width:100%">
         </div>
       </div>
